@@ -1,0 +1,11 @@
+# node modules
+my-chat-app/node_modules/
+my-chat-app-server/node_modules/
+
+#logs
+logs
+*.log
+npm-debug.log*
+
+# 🔥 Vite cache
+.vite/
