@@ -11,14 +11,6 @@ const Form = ({ isSingedUp = false }) => {
     email: "",
     password: "",
   });
-  useEffect(() => {
-    const token = localStorage.getItem("user:token");
-    const user = localStorage.getItem("user:details");
-
-    if (token && user) {
-      navigate("/");
-    }
-  }, [navigate]);
 
   const handleSumbit = async (e) => {
     e.preventDefault();
