@@ -12,6 +12,13 @@ const Form = ({ isSingedUp = false }) => {
     password: "",
   });
   const navigate = useNavigate();
+  useEffect(() => {
+    const token = localStorage.getItem("user:token");
+
+    if (token) {
+      navigate("/");
+    }
+  }, []);
 
   const handleSumbit = async (e) => {
     e.preventDefault();

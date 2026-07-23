@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { io } from "socket.io-client";
 const Dashboard = () => {
   const [user, setUser] = useState(
@@ -9,6 +10,8 @@ const Dashboard = () => {
   const [message, setMessage] = useState("");
   const [users, setUsers] = useState([]);
   const [socket, setSocket] = useState(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     setSocket(io("https://my-chat-app-tam8.onrender.com"));
@@ -67,6 +70,14 @@ const Dashboard = () => {
     fetchUsers();
   }, []);
 
+  useEffect(() => {
+    const token = localStorage.getItem("user:token");
+
+    if (!token) {
+      navigate("/users/sign_in");
+    }
+  }, []);
+
   const fetchMessages = async (conversationId, receiver) => {
     const res = await fetch(
       `https://my-chat-app-tam8.onrender.com/api/message/${conversationId}?senderId=${user?._id}&receiverId=${receiver?.receiverId}`,
@@ -107,6 +118,13 @@ const Dashboard = () => {
     setMessage("");
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("user:token");
+    localStorage.removeItem("user:details");
+
+    navigate("/users/sign_in");
+  };
+
   return (
     <div className="w-screen flex">
       <div className="w-[25%] h-screen bg-[#f3f5ff]">
@@ -120,6 +138,12 @@ const Dashboard = () => {
           </div>
           <div className="ml-8">
             <h3 className="text-2xl">{user.fullName}</h3>
+            <button
+              onClick={handleLogout}
+              className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+            >
+              Sign Out
+            </button>
             <p className="text-lg font-light">My Account</p>
           </div>
         </div>
