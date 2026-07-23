@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 
-const uri =
-  "mongodb+srv://rajatchaharx_db_user:RO88pVCmlOtEAmpL@cluster0.vsa8ik8.mongodb.net/?appName=Cluster0";
+const uri = process.env.MONGO_URI;
 
 mongoose
   .connect(uri)
