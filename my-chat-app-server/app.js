@@ -268,7 +268,7 @@ const server = app.listen(port, () => {
 
 const io = require("socket.io")(server, {
   cors: {
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin: process.env.CLIENT_URL || "https://my-chat-app-tam8.onrender.com",
     methods: ["GET", "POST"],
   },
 });
