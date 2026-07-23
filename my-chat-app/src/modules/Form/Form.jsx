@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Button from "../../components/Button/Button";
 import Input from "../../components/Input/Input";
 import { useNavigate } from "react-router";
@@ -15,10 +15,10 @@ const Form = ({ isSingedUp = false }) => {
   useEffect(() => {
     const token = localStorage.getItem("user:token");
 
-    if (token) {
-      navigate("/");
+    if (!token) {
+      navigate("/users/sign_in");
     }
-  }, []);
+  }, [navigate]);
 
   const handleSumbit = async (e) => {
     e.preventDefault();

@@ -125,6 +125,10 @@ const Dashboard = () => {
     navigate("/users/sign_in");
   };
 
+  if (!user) {
+    return null;
+  }
+
   return (
     <div className="w-screen flex">
       <div className="w-[25%] h-screen bg-[#f3f5ff]">
