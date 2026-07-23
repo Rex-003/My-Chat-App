@@ -16,7 +16,7 @@ const Form = ({ isSingedUp = false }) => {
   const handleSumbit = async (e) => {
     e.preventDefault();
     const res = await fetch(
-      `http://localhost:8000/api/${isSingedUp ? "login" : "register"}`,
+      `https://my-chat-app-tam8.onrender.com/api/${isSingedUp ? "login" : "register"}`,
       {
         method: "POST",
         headers: {

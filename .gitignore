@@ -9,3 +9,6 @@ npm-debug.log*
 
 # Vite cache
 .vite/
+
+# .env
+.env

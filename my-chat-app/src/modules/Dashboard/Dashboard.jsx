@@ -11,7 +11,7 @@ const Dashboard = () => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    setSocket(io("http://localhost:8080"));
+    setSocket(io("https://my-chat-app-tam8.onrender.com"));
   }, []);
 
   useEffect(() => {
@@ -35,7 +35,7 @@ const Dashboard = () => {
 
     const fetchConversations = async () => {
       const res = await fetch(
-        `http://localhost:8000/api/conversation/${loggedInUser?._id}`,
+        `https://my-chat-app-tam8.onrender.com/api/conversation/${loggedInUser?._id}`,
         {
           method: "GET",
           headers: {
@@ -51,13 +51,16 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const res = await fetch(`http://localhost:8000/api/users/${user?._id}`, {
-        method: "GET",
+      const res = await fetch(
+        `https://my-chat-app-tam8.onrender.com/api/users/${user?._id}`,
+        {
+          method: "GET",
 
-        headers: {
-          "Content-Type": "application/json",
+          headers: {
+            "Content-Type": "application/json",
+          },
         },
-      });
+      );
       const resData = await res.json();
       setUsers(resData);
     };
@@ -66,7 +69,7 @@ const Dashboard = () => {
 
   const fetchMessages = async (conversationId, receiver) => {
     const res = await fetch(
-      `http://localhost:8000/api/message/${conversationId}?senderId=${user?._id}&receiverId=${receiver?.receiverId}`,
+      `https://my-chat-app-tam8.onrender.com/api/message/${conversationId}?senderId=${user?._id}&receiverId=${receiver?.receiverId}`,
       {
         method: "GET",
         headers: {
@@ -85,19 +88,22 @@ const Dashboard = () => {
       message,
       receiverId: messages?.receiver?.receiverId,
     });
-    const res = await fetch(`http://localhost:8000/api/message`, {
-      method: "POST",
+    const res = await fetch(
+      `https://my-chat-app-tam8.onrender.com/api/message`,
+      {
+        method: "POST",
 
-      headers: {
-        "Content-Type": "application/json",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          conversationId: messages?.conversationId,
+          senderId: user?._id,
+          message,
+          receiverId: messages?.receiver?.receiverId,
+        }),
       },
-      body: JSON.stringify({
-        conversationId: messages?.conversationId,
-        senderId: user?._id,
-        message,
-        receiverId: messages?.receiver?.receiverId,
-      }),
-    });
+    );
     setMessage("");
   };
 
