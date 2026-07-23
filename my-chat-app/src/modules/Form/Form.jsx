@@ -11,12 +11,12 @@ const Form = ({ isSingedUp = false }) => {
     email: "",
     password: "",
   });
-  const navigate = useNavigate();
   useEffect(() => {
     const token = localStorage.getItem("user:token");
+    const user = localStorage.getItem("user:details");
 
-    if (!token) {
-      navigate("/users/sign_in");
+    if (token && user) {
+      navigate("/");
     }
   }, [navigate]);
 
