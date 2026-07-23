@@ -11,6 +11,7 @@ const Form = ({ isSingedUp = false }) => {
     email: "",
     password: "",
   });
+  const navigate = useNavigate();
 
   const handleSumbit = async (e) => {
     e.preventDefault();

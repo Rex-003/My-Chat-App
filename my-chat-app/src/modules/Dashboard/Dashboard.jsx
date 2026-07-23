@@ -74,9 +74,9 @@ const Dashboard = () => {
     const token = localStorage.getItem("user:token");
 
     if (!token) {
-      navigate("/users/sign_in");
+      navigate("/users/sign_in", { replace: true });
     }
-  }, []);
+  }, [navigate]);
 
   const fetchMessages = async (conversationId, receiver) => {
     const res = await fetch(
