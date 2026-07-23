@@ -49,12 +49,11 @@ app.post("/api/register", async (req, res) => {
       newUser.set("password", hashedPassword);
       await newUser.save();
       const payload = {
-        userId: user._id,
-        email: user.email,
+        userId: newUser._id,
+        email: newUser.email,
       };
 
-      const JWT_SECRET_KEY =
-        process.env.JWT_SECRET_KEY || "THIS_IS_A_JWT_SECRET_KEY";
+      const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
       jwt.sign(
         payload,
@@ -62,9 +61,13 @@ app.post("/api/register", async (req, res) => {
         { expiresIn: 84600 },
         async (err, token) => {
           if (err) return res.status(500).send("Error generating token");
-          await Users.updateOne({ _id: user._id }, { $set: { token } });
+          await Users.updateOne({ _id: newUser._id }, { $set: { token } });
           return res.status(200).json({
-            user: { _id: user._id, fullName: user.fullName, email: user.email },
+            user: {
+              _id: newUser._id,
+              fullName: newUser.fullName,
+              email: newUser.email,
+            },
             token,
           });
         },
