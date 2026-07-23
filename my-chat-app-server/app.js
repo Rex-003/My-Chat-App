@@ -295,12 +295,13 @@ let users = [];
 
 io.on("connection", (socket) => {
   socket.on("addUser", (userId) => {
-    const isUserExist = users.find((user) => user.userId === userId);
-    if (!isUserExist) {
-      const user = { userId, socketId: socket.id };
-      users.push(user);
-      io.emit("getUsers", users);
+    const existingUser = users.find((u) => u.userId === userId);
+    if (existingUser) {
+      existingUser.socketId = socket.id; // refresh to the new connection
+    } else {
+      users.push({ userId, socketId: socket.id });
     }
+    io.emit("getUsers", users);
   });
 
   socket.on(
@@ -325,7 +326,6 @@ io.on("connection", (socket) => {
         };
 
         if (receiver) io.to(receiver.socketId).emit("getMessage", payload);
-        if (sender) io.to(sender.socketId).emit("getMessage", payload);
       } catch (err) {
         console.error("sendMessage error:", err);
       }
