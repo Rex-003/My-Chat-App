@@ -24,7 +24,7 @@ const Dashboard = () => {
     });
     socket?.on("getMessage", (data) => {
       setMessages((prev) => {
-        if (data.conversationId !== prev.conversationId) return prev; // not the open chat
+        if (data.conversationId !== prev.conversationId) return prev;
         return {
           ...prev,
           messages: [
@@ -84,41 +84,48 @@ const Dashboard = () => {
   const fetchMessages = async (conversationId, receiver) => {
     const res = await fetch(
       `https://my-chat-app-tam8.onrender.com/api/message/${conversationId}?senderId=${user?._id}&receiverId=${receiver?.receiverId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      },
+      { method: "GET", headers: { "Content-Type": "application/json" } },
     );
     const resData = await res.json();
-    setMessages({ messages: resData, receiver, conversationId });
+    setMessages({ messages: resData || [], receiver, conversationId });
   };
 
-  const sendMessage = async (e) => {
-    socket?.emit("sendMessage", {
+  const sendMessage = async () => {
+    if (!message.trim()) return;
+
+    const outgoing = {
       conversationId: messages?.conversationId,
       senderId: user?._id,
       message,
       receiverId: messages?.receiver?.receiverId,
-    });
-    const res = await fetch(
-      `https://my-chat-app-tam8.onrender.com/api/message`,
-      {
-        method: "POST",
+    };
 
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          conversationId: messages?.conversationId,
-          senderId: user?._id,
+    // Show it on your own screen immediately
+    setMessages((prev) => ({
+      ...prev,
+      messages: [
+        ...(prev.messages || []),
+        {
+          user: { id: user._id, fullName: user.fullName, email: user.email },
           message,
-          receiverId: messages?.receiver?.receiverId,
-        }),
-      },
-    );
+        },
+      ],
+    }));
     setMessage("");
+
+    // Push it to the other user in real time
+    socket?.emit("sendMessage", outgoing);
+
+    // Persist to DB
+    try {
+      await fetch(`https://my-chat-app-tam8.onrender.com/api/message`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(outgoing),
+      });
+    } catch (err) {
+      console.error("Failed to save message:", err);
+    }
   };
 
   const handleLogout = () => {
