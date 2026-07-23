@@ -310,7 +310,6 @@ io.on("connection", (socket) => {
         const receiver = users.find((u) => u.userId === receiverId);
         const sender = users.find((u) => u.userId === senderId);
         const user = await Users.findById(senderId);
-
         if (!user) return;
 
         const payload = {
@@ -332,7 +331,6 @@ io.on("connection", (socket) => {
       }
     },
   );
-
   socket.on("disconnect", () => {
     users = users.filter((user) => user.socketId !== socket.id);
     io.emit("getUsers", users);
