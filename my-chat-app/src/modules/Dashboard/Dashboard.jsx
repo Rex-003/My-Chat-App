@@ -23,13 +23,16 @@ const Dashboard = () => {
       console.log("activeUsers :>>", users);
     });
     socket?.on("getMessage", (data) => {
-      setMessages((prev) => ({
-        ...prev,
-        messages: [
-          ...prev.messages,
-          { user: data.user, message: data.message },
-        ],
-      }));
+      setMessages((prev) => {
+        if (data.conversationId !== prev.conversationId) return prev; // not the open chat
+        return {
+          ...prev,
+          messages: [
+            ...(prev.messages || []),
+            { user: data.user, message: data.message },
+          ],
+        };
+      });
     });
   }, [socket]);
 
