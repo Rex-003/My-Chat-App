@@ -306,24 +306,29 @@ io.on("connection", (socket) => {
   socket.on(
     "sendMessage",
     async ({ senderId, receiverId, message, conversationId }) => {
-      const receiver = users.find((user) => user.userId === receiverId);
-      const sender = users.find((user) => user.userId === senderId);
-      const user = await Users.findById(senderId);
+      try {
+        const receiver = users.find((u) => u.userId === receiverId);
+        const sender = users.find((u) => u.userId === senderId);
+        const user = await Users.findById(senderId);
 
-      if (receiver) {
-        io.to(receiver.socketId)
-          .to(sender.socketId)
-          .emit("getMessage", {
-            senderId,
-            message,
-            conversationId,
-            receiverId,
-            user: {
-              id: user._id,
-              fullName: user.fullName,
-              email: user.email,
-            },
-          });
+        if (!user) return;
+
+        const payload = {
+          senderId,
+          message,
+          conversationId,
+          receiverId,
+          user: {
+            id: user._id,
+            fullName: user.fullName,
+            email: user.email,
+          },
+        };
+
+        if (receiver) io.to(receiver.socketId).emit("getMessage", payload);
+        if (sender) io.to(sender.socketId).emit("getMessage", payload);
+      } catch (err) {
+        console.error("sendMessage error:", err);
       }
     },
   );
